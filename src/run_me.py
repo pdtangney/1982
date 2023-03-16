@@ -7,6 +7,8 @@ import sys
 import pygame
 
 from settings import Settings
+from player import Player
+
 class MainGame:
     """Overall class to manage 1982: 8-bit life assets and behaviour."""
 
@@ -18,6 +20,8 @@ class MainGame:
         self.screen = pygame.display.set_mode(self.settings.screen_rez)
         pygame.display.set_caption("1982: 8-bit Life")
 
+        self.player_one = Player(self)
+
     def run_game(self):
         """Start the main game loop."""
         while True:
@@ -26,6 +30,7 @@ class MainGame:
                     sys.exit()
 
             self.screen.fill(self.settings.bg_color)
+            self.player_one.blitme()
             pygame.display.flip()
 
 if __name__ == '__main__':
