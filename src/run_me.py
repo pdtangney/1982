@@ -29,6 +29,7 @@ class MainGame:
         """Start the main game loop."""
         while True:
             self._check_events()
+            self.player_one.update()
             self._update_screen()
 
     def _check_events(self):
@@ -36,6 +37,20 @@ class MainGame:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 sys.exit()
+            elif event.type == pygame.KEYDOWN:
+                self._check_keydown_events(event)
+            elif event.type == pygame.KEYUP:
+                self._check_keyup_events(event)
+
+    def _check_keydown_events(self, event):
+        """Check and respond to keyboard keypresses."""
+        if event.key == pygame.K_RIGHT:
+            self.player_one.moving_right = True
+
+    def _check_keyup_events(self, event):
+        """Check and respond to keyboard key releases."""
+        if event.key == pygame.K_RIGHT:
+            self.player_one.moving_right = False
 
     def _update_screen(self):
         """Update objects on screen and flip to the new screen."""

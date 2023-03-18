@@ -12,8 +12,10 @@ class Player:
         """Create a human player instance."""
         self.screen = bit_life.screen
         self.screen_rect = bit_life.screen.get_rect()
-
         self._create_player()
+
+        # Movment flags
+        self.moving_right = False
 
     def _create_player(self):
         """Create a player instance. """
@@ -26,3 +28,8 @@ class Player:
     def blitme(self):
         """Draw the player to the screen at its current location."""
         self.screen.blit(self.image, self.rect)
+
+    def update(self):
+        """Update the player's position based on the movement flags."""
+        if self.moving_right:
+            self.rect.x += 1
