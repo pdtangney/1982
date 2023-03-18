@@ -17,11 +17,13 @@ class MainGame:
         """Initialize the game and create its resources."""
         pygame.init()
         self.settings = Settings()
+        self._initialize_display()
+        self.player_one = Player(self)
 
+    def _initialize_display(self):
+        """Set up the game display to its initial settings."""
         self.screen = pygame.display.set_mode(self.settings.screen_rez)
         pygame.display.set_caption("1982: 8-bit Life")
-
-        self.player_one = Player(self)
 
     def run_game(self):
         """Start the main game loop."""
