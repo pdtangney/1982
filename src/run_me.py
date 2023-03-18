@@ -1,5 +1,6 @@
 """
-Main module for 1982: 8-bit life. Call this file with python3 to run
+1982: 8:bit Life is a  1980's style platformer game.
+Main module for 1982: 8-bit Life. Call this file with python3 to run
 the game.
 """
 import sys
@@ -25,13 +26,20 @@ class MainGame:
     def run_game(self):
         """Start the main game loop."""
         while True:
-            for event in pygame.event.get():
-                if event.type == pygame.QUIT:
-                    sys.exit()
+            self._check_events()
+            self._update_screen()
 
-            self.screen.fill(self.settings.bg_color)
-            self.player_one.blitme()
-            pygame.display.flip()
+    def _check_events(self):
+        """Respond to keyboard, mouse and game controller events."""
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                sys.exit()
+
+    def _update_screen(self):
+        """Update objects on screen and flip to the new screen."""
+        self.screen.fill(self.settings.bg_color)
+        self.player_one.blitme()
+        pygame.display.flip()
 
 if __name__ == '__main__':
     bit_life = MainGame()
