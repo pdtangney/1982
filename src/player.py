@@ -2,13 +2,21 @@
 import pygame
 
 class Player:
-    """Class to manage a player instance."""
+    """
+    Class to manage a player instance.
+    Takes an instance of MainGame in order to get the current screen
+    resolution.
+    """
 
     def  __init__(self, bit_life):
         """Create a human player instance."""
         self.screen = bit_life.screen
         self.screen_rect = bit_life.screen.get_rect()
 
+        self._create_player()
+
+    def _create_player(self):
+        """Create a player instance. """
         self.image = pygame.image.load('images/hero1.png')
         self.rect = self.image.get_rect()
 
