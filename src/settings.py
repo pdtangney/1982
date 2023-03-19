@@ -10,12 +10,16 @@ class Settings:
 
     def __init__(self):
         """Initialize game settings."""
-
-        # Screen settings
-        self.screen_w = 1200
-        self.screen_h = 800
-        self.screen_rez = (self.screen_w, self.screen_h)
-        self.bg_color = (200, 230, 250)
+        self._initialize_screen()
 
         # Misc keybindings, OTHER THAN player keys
         self.quit_game_key = pygame.K_q
+
+    def _initialize_screen(self):
+        """Set-up the initial screen settings."""
+        # Screen settings (960x540 is half of 1920x1080)
+        self.screen_w = 960
+        self.screen_h = 540
+        self.screen_rez = (self.screen_w, self.screen_h)
+        self.bg_color = (200, 230, 250)
+
