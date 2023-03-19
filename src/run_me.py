@@ -38,16 +38,16 @@ class MainGame:
             if event.type == pygame.QUIT:
                 self.quit()
             elif event.type == pygame.KEYDOWN:
-                if event.key == self.settings.quit_game_key or event.key == pygame.K_ESCAPE:
-                    self.quit()
-                else:
-                    self._check_keydown_events(event)
+                self._check_keydown_events(event)
             elif event.type == pygame.KEYUP:
                 self._check_keyup_events(event)
 
     def _check_keydown_events(self, event):
         """Check and respond to keyboard keypresses."""
-        if event.key == pygame.K_RIGHT:
+        if (event.key == self.settings.quit_game_key or
+            event.key == pygame.K_ESCAPE):
+            self.quit()
+        elif event.key == pygame.K_RIGHT:
             self.player_one.moving_right = True
 
     def _check_keyup_events(self, event):
