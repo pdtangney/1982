@@ -28,17 +28,20 @@ class MainGame:
     def run_game(self):
         """Start the main game loop."""
         while True:
-            self._check_events()
+            self._check_input_events()
             self.player_one.update()
             self._update_screen()
 
-    def _check_events(self):
+    def _check_input_events(self):
         """Respond to keyboard, mouse and game controller events."""
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
-                sys.exit()
+                self.quit()
             elif event.type == pygame.KEYDOWN:
-                self._check_keydown_events(event)
+                if event.key == self.settings.quit_game_key or event.key == pygame.K_ESCAPE:
+                    self.quit()
+                else:
+                    self._check_keydown_events(event)
             elif event.type == pygame.KEYUP:
                 self._check_keyup_events(event)
 
@@ -57,6 +60,11 @@ class MainGame:
         self.screen.fill(self.settings.bg_color)
         self.player_one.blitme()
         pygame.display.flip()
+
+    def quit(self):
+        """Quit the game."""
+        pygame.quit()
+        sys.exit()
 
 if __name__ == '__main__':
     bit_life = MainGame()
