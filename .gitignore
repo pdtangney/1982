@@ -1,5 +1,6 @@
 # Misc
 *.swp
+/src/OLD
 
 # My private notes
 private_notes/
