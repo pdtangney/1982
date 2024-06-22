@@ -1,3 +1,5 @@
+"""Module to manage the creation of levels."""
+
 import pygame
 
 from enemy import Enemy
@@ -9,20 +11,20 @@ class Level:
     def __init__(self, game):
         """Retrieve game settings."""
         self.settings = game.settings
-        self.res = self.settings.resolution
+        self.res = self.settings.screen_resolution
 
-    def generate_ground(self, level, groundLoc, tw, th):
+    def generate_ground(self, level, ground_location, tw, th):
         """
         Generate the ground using the tile method.
         tw, th are the dimentions of the tile.
-        groundLoc is the location of the ground.
+        ground_location is the location of the ground.
         """
         ground_list = pygame.sprite.Group()
 
         if level == 1:
-            for i in range(len(groundLoc)):
-                ground = Platform(groundLoc[i],
-                                  self.settings.screenY - th,
+            for i in range(len(ground_location)):
+                ground = Platform(ground_location[i],
+                                  self.settings.screen_resolution[1] - th,
                                   'tile-ground.png')
                 ground_list.add(ground)
 

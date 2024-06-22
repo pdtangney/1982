@@ -1,7 +1,6 @@
 import os
 
 import pygame
-from settings import Settings
 
 
 class Enemy(pygame.sprite.Sprite):
@@ -13,7 +12,8 @@ class Enemy(pygame.sprite.Sprite):
         self.counter = 0
 
     def create_enemy(self, x, y, img):
-        self.image = pygame.image.load(os.path.join('images', img))
+        self.image = pygame.image.load(os.path.join(self.settings.GAME_DIR,
+                                                    'images', img))
         self.image.convert_alpha()
         self.image.set_colorkey(self.settings.colors('ALPHA'))
         self.rect = self.image.get_rect()

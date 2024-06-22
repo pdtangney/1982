@@ -1,3 +1,5 @@
+"""The main game module"""
+
 import os
 import sys
 
@@ -14,43 +16,39 @@ class Game:
         """Initialize the game and create some assets."""
         pygame.init()
         self.settings = Settings()
-        self.initialize_display()
+        self._initialize_display()
         self.level = Level(self)
         self.add_player_one()
         self.generate_level_one()
 
-    def initialize_display(self):
+    def _initialize_display(self):
         """Set up the game display."""
-        self.screen = pygame.display.set_mode((self.settings.resolution))
-        self.screen_rect = self.screen.get_rect()
+        self.screen = pygame.display.set_mode(
+                (self.settings.screen_resolution))
         self.background = pygame.image.load(os.path.join(
-                                        'images', 'wide-stage.png')).convert()
+            self.settings.GAME_DIR, 'images', 'wide-stage.png')).convert()
         self.background_rect = self.background.get_rect()
         pygame.display.set_caption("Block Party")
-        self.clock = pygame.time.Clock()
 
     def generate_level_one(self):
         """Create the first level."""
-        res = self.settings.resolution
         # Generate the ground using the tile method.
+        tile_width = 64
+        tile_height = 64
+        ground_tile_count = self.settings.screen_resolution[0] // tile_width
         ground_location = []
-
-        # Tile dimentions
-        tw = 64
-        th = 64
-        tiles = self.settings.screenX // tw
-        for i in range(tiles):
-            ground_location.append(i * tw)
+        for i in range(ground_tile_count):
+            ground_location.append(i * tile_width)
 
         self.ground_list = self.level.generate_ground(1, ground_location,
-                                                      tw, th)
+                                                      tile_width, tile_height)
 
-        self.platform_list = self.level.platform(1, tw, th)
+        self.platform_list = self.level.platform(1, tile_width, tile_height)
 
         self.loot_list = self.level.loot(1)
 
         # Create an enemy at x, y
-        self.e_loc = [1030, res[1]-368]
+        self.e_loc = [1030, self.settings.screen_resolution[1]-368]
         self.enemy_list = self.level.enemies(1, self.e_loc, 'enemy4.png')
 
     def add_player_one(self):
@@ -66,34 +64,28 @@ class Game:
         while True:
             self._check_input_events()
             self.p1.jump()
-            self.p1.gravity()
             self._check_enemy_collisions()
             self._scroll_world()
             self._update_screen()
 
     def _check_input_events(self):
         """Check for keyboard, mouse and gamepad events."""
-        if self.settings.p1_is_running:
-            self.settings.p1_speed = self.settings.running
-        else:
-            self.settings.p1_speed = self.settings.walking
-
         keys = pygame.key.get_pressed()
         if keys[self.settings.p1_left]:
             if keys[self.settings.p1_run]:
-                self.settings.p1_is_running = True
-                self.p1.control(-self.settings.p1_speed, 0)
+                self.p1.is_running = True
+                self.p1.control(-self.p1.speed['running'], 0)
             else:
-                self.settings.p1_is_running = False
-                self.p1.control(-self.settings.p1_speed, 0)
+                self.p1.is_running = False
+                self.p1.control(-self.p1.speed['walking'], 0)
 
         elif keys[self.settings.p1_right]:
             if keys[self.settings.p1_run]:
-                self.settings.p1_is_running = True
-                self.p1.control(self.settings.p1_speed, 0)
+                self.p1.is_running = True
+                self.p1.control(self.p1.speed['running'], 0)
             else:
-                self.settings.p1_is_running = False
-                self.p1.control(self.settings.p1_speed, 0)
+                self.p1.is_running = False
+                self.p1.control(self.p1.speed['walking'], 0)
         else:
             # Stop player from moving when no keys pressed.
             self.p1.control(0, self.settings.gravity)
@@ -106,7 +98,7 @@ class Game:
                 if event.key == ord('q') or event.key == pygame.K_ESCAPE:
                     self.quit()
                 elif event.key == self.settings.p1_jump:
-                    self.p1.isJumping = True
+                    self.p1.is_jumping = True
 
     def quit(self):
         """Quit the game."""
@@ -115,7 +107,7 @@ class Game:
 
     def _check_enemy_collisions(self):
         hit_list = pygame.sprite.spritecollide(self.p1, self.enemy_list, False)
-        for enemy in hit_list:
+        if hit_list:
             self.p1.health -= 1
             print(f'Health: {self.p1.health}')
 
@@ -123,33 +115,33 @@ class Game:
         # Scroll forward
         if (self.p1.rect.x < self.background_rect.right -
            (self.p1.rect.width * 2)):
-            if self.p1.rect.x >= self.settings.forwardX:
-                scroll = self.p1.rect.x - self.settings.forwardX
+            if self.p1.rect.x >= self.settings.forward_x:
+                scroll = self.p1.rect.x - self.settings.forward_x
                 self.background_rect.x -= scroll
-                self.p1.rect.x = self.settings.forwardX
+                self.p1.rect.x = self.settings.forward_x
                 for p in self.platform_list:
                     p.rect.x -= scroll
                 for e in self.enemy_list:
                     e.rect.x -= scroll
-                for l in self.loot_list:
-                    l.rect.x -= scroll
+                for loot in self.loot_list:
+                    loot.rect.x -= scroll
         else:
-            self.p1.rect.left = self.settings.forwardX
+            self.p1.rect.left = self.settings.forward_x
 
         # Scroll backward
         if self.p1.rect.left > self.background_rect.left:
-            if self.p1.rect.x <= self.settings.backwardX:
-                scroll = self.settings.backwardX - self.p1.rect.x
+            if self.p1.rect.x <= self.settings.backward_x:
+                scroll = self.settings.backward_x - self.p1.rect.x
                 self.background_rect.x += scroll
-                self.p1.rect.x = self.settings.backwardX
+                self.p1.rect.x = self.settings.backward_x
                 for p in self.platform_list:
                     p.rect.x += scroll
                 for e in self.enemy_list:
                     e.rect.x += scroll
-                for l in self.loot_list:
-                    l.rect.x += scroll
+                for loot in self.loot_list:
+                    loot.rect.x += scroll
         else:
-            self.p1.rect.x = self.settings.backwardX
+            self.p1.rect.x = self.settings.backward_x
 
     def _update_screen(self):
         """Update the display."""
@@ -167,7 +159,7 @@ class Game:
         self.player_list.draw(self.screen)
 
         pygame.display.flip()
-        self.clock.tick(self.settings.fps)
+        pygame.time.Clock().tick(self.settings.fps)
 
 
 if __name__ == '__main__':
